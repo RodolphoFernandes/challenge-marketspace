@@ -9,13 +9,13 @@ import {
   Text, 
   VStack 
 } from "native-base";
-import {ArrowRight, Tag, MagnifyingGlass, Sliders} from 'phosphor-react-native';
-import { Button } from "@components/Button";
-import { Input } from "@components/Input";
+import {ArrowRight, Tag, MagnifyingGlass, Sliders, X} from 'phosphor-react-native';
+import { Button } from "../components/Button";
+import { Input } from "../components/Input";
 
 export function Home(): JSX.Element {
   const sheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["70%", "90%"], []);
+  const snapPoints = useMemo(() => ["50%", "70%"], []);
 
   const handleSheetChange = useCallback((index: number) => {
     console.log("handleSheetChange", index);
@@ -31,7 +31,10 @@ export function Home(): JSX.Element {
   }, []);
 
   return (
-    <VStack px={6} >
+    <VStack 
+      flex={1}
+      px={6}
+    >
       <HStack 
         bg="gray.200" 
         // pt={16} 
@@ -158,12 +161,21 @@ export function Home(): JSX.Element {
       />
 
       <BottomSheet
-          ref={sheetRef}
-          snapPoints={snapPoints}
-          onChange={handleSheetChange}
-        >
+        ref={sheetRef}
+        snapPoints={snapPoints}
+        onChange={handleSheetChange}
+      >
           <BottomSheetView>
-            <Text>Awesome 🔥</Text>
+            <HStack
+            justifyContent="space-between"
+            paddingX={3}
+            >
+              <Text>Awesome 🔥</Text>
+              <Pressable onPress={handleClosePress}>
+                <Icon as={<X /> } size={5} mr="2" color="gray.600" />
+              </Pressable>
+            </HStack>
+            
           </BottomSheetView>
         </BottomSheet>
     </VStack>

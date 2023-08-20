@@ -8,8 +8,8 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
 import LogoSvg from '@assets/logo.svg';
-import { Input } from "@components/Input";
-import { Button } from "@components/Button";
+import { Input } from "../components/Input";
+import { Button } from "../components/Button";
 
 type FormDataProps = {
   name: string;

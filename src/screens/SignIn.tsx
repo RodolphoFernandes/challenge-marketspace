@@ -6,8 +6,8 @@ import * as yup from "yup";
 import {Eye, EyeSlash} from 'phosphor-react-native';
 
 import GroupSvg from '@assets/group.svg';
-import { Input } from "@components/Input";
-import { Button } from "@components/Button";
+import { Input } from "../components/Input";
+import { Button } from "../components/Button";
 
 type FormDataProps = {
   email: string;

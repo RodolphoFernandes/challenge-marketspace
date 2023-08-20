@@ -4,6 +4,7 @@ module.exports = function(api) {
     presets: ['babel-preset-expo'],
     plugins: [
       [
+        'react-native-reanimated/plugin',       
         'module-resolver',
         {
           root: ['./src'],
@@ -19,8 +20,8 @@ module.exports = function(api) {
             '@contexts': './src/contexts',
             '@routes': './src/routes'
           }
-        },
-      ],
-    ],
+        }                
+      ]
+    ]
   };
 };

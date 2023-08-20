@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Avatar, Center, Icon, Pressable, ScrollView, Text, VStack } from "native-base";
+import { Avatar, Center, Icon, Pressable, ScrollView, Text, VStack, useToast } from "native-base";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {Eye, EyeSlash, PencilSimpleLine} from 'phosphor-react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
 import LogoSvg from '@assets/logo.svg';
 import { Input } from "@components/Input";
@@ -17,6 +19,8 @@ type FormDataProps = {
   confirmed_password: string;
 }
 
+const AVATAR_SIZE = 24;
+
 const signUpSchema = yup.object({
   name: yup.string().required('Informe o nome.'),
   email: yup.string().required('Informe o e-mail.').email('E-mail inválido.'),
@@ -29,10 +33,42 @@ const signUpSchema = yup.object({
 export function SignUp(): JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmePassword, setShowConfirmePassword] = useState(false);
+  const [uriAvatar, setUriAvatar] = useState('https://github.com/RodolphoFernandes.png')
+
+  const toast = useToast();
 
   const { control, handleSubmit, formState: {errors} } = useForm<FormDataProps>({
     resolver: yupResolver(signUpSchema),
   });
+
+  async function handleUserPhotoSelect(){
+    try {
+      const {assets, canceled } = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4,4],
+        quality: 1
+      });
+
+      if(!canceled && assets[0]?.uri){
+        const photoInfo: any = await FileSystem.getInfoAsync(assets[0]?.uri);
+
+        if(photoInfo.size && (photoInfo.size / 1024 / 1024) > 5){
+          return toast.show({
+            title: 'Essa imagem é muito grande. Escolha uma de até 5MB.',
+            placement: 'top',
+            bgColor: 'red.500'
+          });         
+        }
+
+        setUriAvatar(assets[0].uri);
+
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async function handleSignUp({name, email, tel, password,confirmed_password}: FormDataProps){
     console.log({name, email, tel, password,confirmed_password});
@@ -76,12 +112,12 @@ export function SignUp(): JSX.Element {
 
          <Center>
           <Avatar 
-            size={24}
+            size={AVATAR_SIZE}
             marginBottom={4}
             borderWidth={2}
             borderColor="lightBlue.700"
             source={{
-              uri: 'https://avatars.githubusercontent.com/u/26528485?v=4'
+              uri: uriAvatar
             }}
           >
             <Avatar.Badge 
@@ -91,7 +127,7 @@ export function SignUp(): JSX.Element {
               justifyContent="center"
               borderWidth={0}
               children={
-                <Pressable onPress={() => console.log('fui pressionado')}>
+                <Pressable onPress={handleUserPhotoSelect}>
                   <Icon as={<PencilSimpleLine />} size={3} color="gray.200" />
                 </Pressable>
               }
